@@ -11,3 +11,5 @@ sales, orders, payments, shipping, and profiles.
 exceptional customer service.  <br />
 ● It also allows the management to track the workflow and performance of the
 organization.
+
+Note: Please review the License before dowloading/copying the project
