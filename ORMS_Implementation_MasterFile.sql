@@ -6,6 +6,7 @@ GO
 -- USE DATABASE ORMS
 USE ORMS;
 
+ALTER TABLE Payment DROP CONSTRAINT fk_payment_cartid;
 DROP TABLE Cart;
 DROP TABLE Reviews;
 DROP TABLE Orderline;
@@ -58,7 +59,7 @@ CREATE TABLE Customer
     CONSTRAINT chk_gender CHECK (gender = 'M' OR gender = 'F'),
     CONSTRAINT chk_email CHECK (email LIKE '%@%'),
     CONSTRAINT chk_birthday CHECK (birthdate < GetDate()),
-    CONSTRAINT chk_phone CHECK (phone not like '%[^0-9]%'),
+    CONSTRAINT chk_phone CHECK (phone not like '%[^0-9+-.]%'),
     CONSTRAINT chk_unique_user UNIQUE (email,userName)
 )
 
@@ -437,7 +438,7 @@ INSERT INTO shipments (customerID, orderID, shipmentDate,shipmentStatus,shipping
 INSERT INTO shipments (customerID, orderID, shipmentDate,shipmentStatus,shippingVendor)VALUES (1001, 102,'2022-04-02','Sending','FedEx');
 INSERT INTO shipments (customerID, orderID, shipmentDate,shipmentStatus,shippingVendor)VALUES (1003, 111,'2022-03-30','Sending','UPS');
 INSERT INTO shipments (customerID, orderID, shipmentDate,shipmentStatus,shippingVendor)VALUES (1004, 109,'2020-01-02','Shipped','UPS');
-
+s
 
 
 INSERT INTO vendor VALUES ('vendor1','addr_vendor1');
@@ -519,6 +520,8 @@ GO
 SELECT * FROM Reviews;
 GO
 SELECT * FROM Cart;
+GO
+SELECT * FROM Payment;
 
 
 

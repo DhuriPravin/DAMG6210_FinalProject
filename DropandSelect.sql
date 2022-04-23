@@ -1,4 +1,4 @@
-
+ALTER TABLE Payment DROP CONSTRAINT fk_payment_cartid;
 DROP TABLE Cart;
 DROP TABLE Reviews;
 DROP TABLE Orderline;
