@@ -1,5 +1,7 @@
 USE ORMS
 
+CREATE VIEW TotalSales
+AS
 SELECT YEAR(orderDate) [year],
     MONTH(orderDate) [month],
     SUM(payment) totalSales
@@ -8,17 +10,22 @@ WHERE orderDate IS NOT NULL
 GROUP BY MONTH(orderDate), YEAR(orderDate);
 
 --Calculates the Extended Price, the discounted total for each line item (order detail) in all orders, using data from the Order Details and Products tables :
+
+CREATE VIEW ExtendedPrice
+AS
 SELECT
     ol.orderID, ol.productID, p.productName, p.sellingPrice, ol.quantity,
     (p.sellingPrice * ol.quantity) AS ExtendedPrice
 FROM Product p
     INNER JOIN [Orderline] ol
     ON p.productID = ol.productID
-ORDER BY ol.orderID;
+--ORDER BY ol.orderID;
 
 
 --The Sales by Category query summarizes sales data ($ figures) for all products, sorted by category, using data from three tables (Products, Orders, and Order Details) and the Order Details Extended query
 
+CREATE VIEW SalesByCategory
+AS
 SELECT c.categoryID, c.categoryType, p.productName, Sum(o.payment) AS ProductSales
 FROM Category c
     INNER JOIN (Product p
@@ -28,9 +35,12 @@ FROM Category c
     ON p.productID = ol.productID )
     ON c.categoryID = p.categoryID
 GROUP BY c.categoryID, c.categoryType, p.productName
-ORDER BY c.categoryType;
+--ORDER BY c.categoryType;
 
 --Find the order id, order amount and date and time of ordering, feedback date (this 15 days after the order has been shipped), arranged in ascending order by feedback date.
+
+CREATE VIEW FeedbackDate
+AS
 SELECT
     o.orderID,
     o.orderDate,
@@ -39,10 +49,11 @@ SELECT
 FROM Shipments s
     JOIN Orders o
     ON s.orderID = o.orderID
-ORDER BY DATEADD(Day,15,shipmentDate);
+--ORDER BY DATEADD(Day,15,shipmentDate);
 
 
-
+CREATE VIEW TotalBilling
+AS
 SELECT RANK() OVER(ORDER BY COUNT(o.OrderID) DESC) AS [CustomerRank],
     o.customerID, c.name, COUNT(o.orderID) AS [Total Orders of Customer],
     SUM(ca.totalPrice) AS [Total Billing Amt of each Customer]
@@ -51,7 +62,8 @@ o.customerID = c.customerID INNER JOIN Cart ca ON o.customerID = ca.customerID
 GROUP BY o.customerID, c.name;
 
 
-
+CREATE VIEW QuantityCheck
+AS
 SELECT c.customerID, c.name, s.orderID,  pro.quantity
 FROM
     (
@@ -69,10 +81,11 @@ SELECT DISTINCT customerID,
     FROM
         Customer
 ) c ON s.customerID = c.customerID
-ORDER BY c.customerID;
+--ORDER BY c.customerID;
 
 
-
+CREATE VIEW StockAvail
+AS
 SELECT productID, productQuantityAvail,
     CASE
 WHEN productQuantityAvail = 0 THEN 'Out of stock'
